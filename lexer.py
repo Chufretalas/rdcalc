@@ -4,58 +4,71 @@ from token_type import TokenType
 
 class Lexer:
     def __init__(self, source: str) -> None:
-        self.source = source
-        self.start_idx = 0
-        self.curr_idx = 0
-        self.tokens: list[Token] = []
+        self._source = source
+        self._start_idx = 0
+        self._curr_idx = 0
+        self._tokens: list[Token] = []
 
     def scanTokens(self) -> list[Token]:
         while not self._isAtEnd():
-            self.start_idx = self.curr_idx
+            self._start_idx = self._curr_idx
             self._scanToken()
 
-        return self.tokens
+        return self._tokens
 
+    # ====== Consumers ====== #
     def _scanToken(self) -> None:
-        c = self.advance()
+        c = self._advance()
         match c:
             case "+":
-                self.addToken(TokenType.PLUS)
+                self._addToken(TokenType.PLUS)
             case "-":
-                self.addToken(TokenType.MINUS)
+                self._addToken(TokenType.MINUS)
             case "*":
-                self.addToken(TokenType.STAR)
+                self._addToken(TokenType.STAR)
             case "/":
-                self.addToken(TokenType.SLASH)
+                self._addToken(TokenType.SLASH)
             case "^":
-                self.addToken(TokenType.POWER)
+                self._addToken(TokenType.POWER)
             case "!":
-                self.addToken(TokenType.BANG)
+                self._addToken(TokenType.BANG)
             case "(":
-                self.addToken(TokenType.LEFT_PARAM)
+                self._addToken(TokenType.LEFT_PARAM)
             case ")":
-                self.addToken(TokenType.RIGHT_PARAM)
+                self._addToken(TokenType.RIGHT_PARAM)
             case _ if c.isdigit():
-                self.consume_number()
+                self._consume_number()
             case _ if c.isspace():
                 pass
             case _:
                 raise Exception("Unexpected character")
 
-    def addToken(self, type: TokenType) -> None:
-        lexeme = self.source[self.start_idx : self.curr_idx]
-        self.tokens.append(Token(type, lexeme))
+    def _consume_number(self) -> None:
+        while self._peek().isdigit():
+            self._advance()
 
-    def advance(self) -> str:
-        curr_char = self.source[self.curr_idx]
-        self.curr_idx += 1
+        if self._peek() == ".":
+            self._advance()
+            while self._peek().isdigit():
+                self._advance()
+
+        self._addToken(TokenType.NUMBER)
+
+    # ====== Helpers ====== #
+    def _addToken(self, type: TokenType) -> None:
+        lexeme = self._source[self._start_idx : self._curr_idx]
+        self._tokens.append(Token(type, lexeme))
+
+    def _advance(self) -> str:
+        curr_char = self._source[self._curr_idx]
+        self._curr_idx += 1
         return curr_char
-        
-    def peek(self) -> str:
+
+    def _peek(self) -> str:
         if self._isAtEnd():
             return " "
-        
-        return self.source[self.curr_idx]
+
+        return self._source[self._curr_idx]
 
     def _isAtEnd(self) -> bool:
-        return self.curr_idx >= len(self.source)
+        return self._curr_idx >= len(self._source)
