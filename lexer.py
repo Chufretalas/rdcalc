@@ -14,6 +14,7 @@ class Lexer:
             self._start_idx = self._curr_idx
             self._scanToken()
 
+        self._tokens.append(Token(TokenType.EOF, ""))
         return self._tokens
 
     # ====== Consumers ====== #
@@ -41,7 +42,7 @@ class Lexer:
             case _ if c.isspace():
                 pass
             case _:
-                raise Exception("Unexpected character")
+                raise Exception(f"Unexpected character '{c}'")
 
     def _consume_number(self) -> None:
         while self._peek().isdigit():

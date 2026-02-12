@@ -10,3 +10,4 @@ class TokenType(Enum):
     LEFT_PARAM = 7 # "("
     RIGHT_PARAM = 8 # ")"
     NUMBER = 9 # "\d+(\.\d)?"
+    EOF = 10
