@@ -2,6 +2,7 @@ import math
 from typing import cast
 
 from expr import BinaryExpr, Expr, ExprVisitor, GroupingExpr, LiteralExpr, UnaryExpr
+from my_exceptions import MyRuntimeError
 from token_type import TokenType
 
 
@@ -28,14 +29,14 @@ class Interpreter(ExprVisitor[float]):
                 return left_value * right_value
             case TokenType.SLASH:
                 if right_value == 0.0:
-                    raise Exception(
+                    raise MyRuntimeError(
                         f"Can not divide by zero. {left_value} / {right_value}"
                     )
                 return left_value / right_value
             case TokenType.POWER:
                 return left_value**right_value
 
-        raise Exception("Unknown case in visitBinaryExpression")
+        raise MyRuntimeError("Unknown case in visitBinaryExpression")
 
     def visitUnaryExpr(self, expr: UnaryExpr) -> float:
         value = cast(float, expr.expr.accept(self))
@@ -44,12 +45,12 @@ class Interpreter(ExprVisitor[float]):
                 return -value
             case TokenType.BANG:
                 if not float.is_integer(value):
-                    raise Exception(
+                    raise MyRuntimeError(
                         f"Factorial can only be applied to an integer. Expected integer, got {value}"
                     )
                 return float(math.factorial(int(value)))
 
-        raise Exception("Unknown case in visitUnaryExpression")
+        raise MyRuntimeError("Unknown case in visitUnaryExpression")
 
     def visitGroupingExpr(self, expr: GroupingExpr) -> float:
         return cast(float, expr.expr.accept(self))

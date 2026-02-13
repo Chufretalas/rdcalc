@@ -1,3 +1,4 @@
+from my_exceptions import MySyntaxError
 from my_token import Token
 from token_type import TokenType
 
@@ -42,7 +43,7 @@ class Lexer:
             case _ if c.isspace():
                 pass
             case _:
-                raise Exception(f"Unexpected character '{c}'")
+                raise MySyntaxError(f"Unexpected character '{c}'")
 
     def _consume_number(self) -> None:
         while self._peek().isdigit():

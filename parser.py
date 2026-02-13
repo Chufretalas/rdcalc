@@ -1,4 +1,5 @@
 from expr import BinaryExpr, Expr, GroupingExpr, LiteralExpr, UnaryExpr
+from my_exceptions import MySyntaxError
 from my_token import Token
 from token_type import TokenType
 
@@ -62,7 +63,7 @@ class Parser:
             expr = self._sum_sub()
 
             if not self._check(TokenType.RIGHT_PARAM):
-                raise Exception("Expected ')'")
+                raise MySyntaxError(f"Expected ')', got '{self._peek().lexeme}'")
 
             self._advance()  # Consume the ')'
 
@@ -73,7 +74,7 @@ class Parser:
     def _number(self) -> Expr:
         token = self._advance()
         if token.type != TokenType.NUMBER:
-            raise Exception(f"Expected number, got {token}")
+            raise MySyntaxError(f"Expected number, got '{token.lexeme}'")
 
         return LiteralExpr(float(token.lexeme))
 
