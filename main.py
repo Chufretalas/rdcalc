@@ -14,7 +14,7 @@ try:
             tokens = lexer.scanTokens()
             parser = Parser(tokens)
             expr = parser.parse()
-            ast_printer.print(expr)
+            #ast_printer.print(expr)
             print(interpreter.do_the_math_stuff(expr))
         except MySyntaxError as e:
             print(f"SYNTAX ERROR: {e}")
