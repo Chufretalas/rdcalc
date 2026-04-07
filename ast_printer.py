@@ -3,7 +3,7 @@ from expr import BinaryExpr, Expr, ExprVisitor, GroupingExpr, LiteralExpr, Unary
 
 class AstPrinter(ExprVisitor[str]):
     def print(self, expr: Expr) -> None:
-        print(expr.accept(self))
+        print(f"[AST] {expr.accept(self)}")
 
     def visitBinaryExpr(self, expr: BinaryExpr) -> str:
         return f"({expr.operator.lexeme} {expr.left.accept(self)} {expr.right.accept(self)})"
